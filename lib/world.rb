@@ -10,6 +10,34 @@ class World < Identifiable
 
   def size=(size)
     @size = size.freeze
+    @size_padding = @size.to_s.length
+    @size
+  end
+
+  def level_map(max_height: @size)
+    log("Generate level_map")
+    log string_map
+    high_points = @size / 2 
+    log("Will put #{high_points} high points")
+    high_points.times do 
+      height = rand(max_height)
+      point = rand(@size) * rand(@size)
+      @level_map[point] = height
+    end
+    log string_map
+  end
+
+  def string_map
+    map = "\n"
+    @level_map.each_with_index do |level, index|
+      map << "%0#{@size_padding}d" % level
+      if (index+1) % @size == 0
+        map << "\n" 
+      else
+        map << ','
+      end
+    end
+    map << "\n"
   end
 
   def spawn(klass)
@@ -22,6 +50,8 @@ class World < Identifiable
   end
 
   def setup(living_count: 3)
+    @level_map = Array.new(@size**2, 0)
+    level_map
     living_count.times do
       spawn(Living)
     end
