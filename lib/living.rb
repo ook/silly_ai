@@ -4,7 +4,7 @@ class Living < Identifiable
   end
 
   def run_tick(env)
-    log('Damn, I\'m alive…')
+    log("Damn, I\'m alive… At #{env[:pos]}")
   end
 
 end

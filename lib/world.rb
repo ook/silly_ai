@@ -15,6 +15,7 @@ class World < Identifiable
   end
 
   def level_map(max_height: @size)
+    srand(@identifier.to_i(16))
     log("Generate level_map")
     log string_map
     high_points = @size / 2 
@@ -28,7 +29,7 @@ class World < Identifiable
   end
 
   def string_map
-    map = "\n"
+    map = "\n\n"
     @level_map.each_with_index do |level, index|
       map << "%0#{@size_padding}d" % level
       if (index+1) % @size == 0
@@ -37,7 +38,7 @@ class World < Identifiable
         map << ','
       end
     end
-    map << "\n"
+    map
   end
 
   def spawn(klass)

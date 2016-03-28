@@ -9,9 +9,14 @@ def time_ms
   (Time.new.to_f * 1000).to_i
 end
 
+forced_seed = ARGV[0]
+
 must_quit = false
 
 world = World.new
+if forced_seed
+  world.instance_variable_set(:@identifier, forced_seed)
+end
 world.log "Lux fiat"
 
 world.size = 16
