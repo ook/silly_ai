@@ -1,4 +1,7 @@
+require 'securerandom'
+
 require_relative 'lib/identifiable'
+require_relative 'lib/position'
 require_relative 'lib/world'
 require_relative 'lib/living'
 
@@ -17,10 +20,10 @@ must_quit = false
 log "Lux fiat"
 
 world = World.new
-living = Living.new
 
 log world.identify
-log living.identify
+world.size = 16
+world.setup
 
 tick = 0
 
@@ -41,6 +44,7 @@ loop do
   log "tick #{tick} - #{time_ms}"
 
   end_of_tick = time_ms
+  log "Used tick time: #{end_of_tick - tick_start}"
   if end_of_tick < tick_stop
     sleep((tick_stop - end_of_tick) / 1_000)
   end
@@ -53,4 +57,5 @@ loop do
 end
 
 log('loop exited')
+log('Armaggedon')
 exit 0
