@@ -3,7 +3,8 @@ class Living < Identifiable
     super
   end
 
-  def run_tick
+  def run_tick(env)
     log('Damn, I\'m alive…')
   end
+
 end

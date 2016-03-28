@@ -28,7 +28,11 @@ class World < Identifiable
   end
 
   def run_tick
-
+    log("World tick")
+    log("Spawns turn")
+    @spawns.values.each do |spawn|
+      spawn.run_tick({pos: @positions[spawn.identifier]})
+    end
   end
 
   def random_free_position

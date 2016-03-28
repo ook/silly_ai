@@ -11,4 +11,12 @@ class Identifiable
   def identifier
     @identifier
   end
+
+  def log(message, output: $stdout, lf: true)
+    time = Time.new.strftime("%Y%m%d %H:%M:%S")
+    output << "[#{time}] #{@identifier} #{message}" 
+    output << "\n" if lf
+    nil
+  end
+
 end

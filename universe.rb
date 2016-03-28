@@ -5,23 +5,15 @@ require_relative 'lib/position'
 require_relative 'lib/world'
 require_relative 'lib/living'
 
-def log(message, output: $stdout, lf: true)
-  time = Time.new.strftime("%Y%m%d %H:%M:%S")
-  output << "[#{time}] #{message}" 
-  output << "\n" if lf
-  nil
-end
-
 def time_ms
   (Time.new.to_f * 1000).to_i
 end
 
 must_quit = false
-log "Lux fiat"
 
 world = World.new
+world.log "Lux fiat"
 
-log world.identify
 world.size = 16
 world.setup
 
@@ -29,33 +21,35 @@ tick = 0
 
 trap('INT') do
   must_quit = true
-  log('INT trapped')
+  world.log('INT trapped')
 end
 
-log('Trap set')
+world.log('Trap set')
 
-log('Entering the loop')
+world.log('Entering the loop')
 
 TICK_DURATION = 1_000 # millisecond
 
 loop do
   tick_start = time_ms
   tick_stop = tick_start + TICK_DURATION
-  log "tick #{tick} - #{time_ms}"
+  world.log "tick #{tick} - #{time_ms}"
+
+  world.run_tick
 
   end_of_tick = time_ms
-  log "Used tick time: #{end_of_tick - tick_start}"
+  world.log "Used tick time: #{end_of_tick - tick_start}"
   if end_of_tick < tick_stop
     sleep((tick_stop - end_of_tick) / 1_000)
   end
-  log "Tick real duration: #{time_ms - tick_start}"
+  world.log "Tick real duration: #{time_ms - tick_start}"
   tick += 1
   if must_quit
-    log "Quitting the loop"
+    world.log "Quitting the loop"
     break
   end
 end
 
-log('loop exited')
-log('Armaggedon')
+world.log('loop exited')
+world.log('Armaggedon')
 exit 0
