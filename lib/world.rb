@@ -18,7 +18,7 @@ class World < Identifiable
     pos = random_free_position
     @positions[item.identifier] = pos
     @occupiers[pos] << item.identifier
-    log("Spawned #{identifier} at #{pos}")
+    log("Spawned #{item.identify} at #{pos}")
   end
 
   def setup(living_count: 3)
