@@ -13,6 +13,10 @@ class Position
     @z
   end
 
+  def z=(new_z)
+    @z = new_z
+  end
+
   def initialize(x, y, z)
     @x = x
     @y = y

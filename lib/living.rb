@@ -1,5 +1,5 @@
 class Living < Identifiable
-  STATUSES = %i(idling falling)
+  STATUSES = %i(idling falling suffocating)
   def initialize
     super
     @status = STATUSES.first
@@ -20,22 +20,21 @@ class Living < Identifiable
   end
 
   def run_tick(env)
+    puts env.inspect
     tick_story = Array("Damn, I\'m alive…")
 
-    env_status = env.delete(:forced_status)
-    if env_status
-      forced_status = forced_status[:status]
+    forced_status = env.delete(:forced_status)
+    if forced_status
       log "fs:#{forced_status} s:#{status}"
       if forced_status != status
         @status_duration = 0
         self.status = forced_status
         tick_story << "I’m #{forced_status}!"
       end
-      duration = forced_status[:since]
     end
     @status_duration += 1
 
-    tick_story << "I\'m #{status} for #{status_duration}"
+    tick_story << "I\'m #{status} for #{status_duration} tick."
     pos = env.delete(:pos)
     if pos
       tick_story << "I'm at #{pos}"
@@ -43,6 +42,7 @@ class Living < Identifiable
 
     log tick_story.join(' ')
     raise "Haven't consume all my env: #{env.inspect}" unless env.keys.length == 0
+
   end
 
 end
