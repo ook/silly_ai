@@ -28,11 +28,22 @@ class World < Identifiable
     log string_map
   end
 
-  def string_map
+  def string_map(with_grid: true)
     map = "\n\n"
+    if with_grid
+      map << " " * (1 + @size_padding)
+      map << (0..@size-1).map do |index|
+        "%0#{@size_padding}d" % index
+      end.join(' ')
+      map << "\n"
+    end
     @level_map.each_with_index do |level, index|
+      end_of_line = (index+1) % @size == 0
+      if with_grid && index % @size == 0
+        map << "%0#{@size_padding}d " % (index / @size)
+      end
       map << "%0#{@size_padding}d" % level
-      if (index+1) % @size == 0
+      if end_of_line
         map << "\n" 
       else
         map << ','
