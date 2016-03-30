@@ -1,5 +1,6 @@
 require 'securerandom'
 
+require_relative 'lib/fifo_memory'
 require_relative 'lib/identifiable'
 require_relative 'lib/position'
 require_relative 'lib/world'

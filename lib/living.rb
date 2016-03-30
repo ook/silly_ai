@@ -4,6 +4,7 @@ class Living < Identifiable
     super
     @status = STATUSES.first
     @status_duration = 0
+    @last_statuses = FifoMemory.new
   end
 
   def status=(status)
@@ -31,7 +32,14 @@ class Living < Identifiable
         self.status = forced_status
         tick_story << "I’m #{forced_status}!"
       end
+    else
+      if @last_statuses.see == :falling
+        log("OUTCH! I was falling since #{@status_duration} ticks and now I touch the ground")
+        self.status = :idling
+        @status_duration = 0
+      end
     end
+    @last_statuses.push(status)
     @status_duration += 1
 
     tick_story << "I\'m #{status} for #{status_duration} tick."
