@@ -1,6 +1,6 @@
-require 'set'
-
 class World < Identifiable
+  GRAVITY = Vector.new(z: -0.98) # Yeah, I know…
+
   def initialize
     super
     @spawns = {} # key: spawn identifier, value Living
@@ -73,41 +73,39 @@ class World < Identifiable
     log("World tick")
     log("Spawns turn")
     @spawns.values.each do |spawn|
-      spawn_position = @positions[spawn.identifier]  
-      env = { pos: spawn_position }
-      env.merge!(falling_env(spawn)) 
+      apply_gravity(spawn)
+      resolve_movement(spawn)
       spawn.run_tick(env)
-
-      case spawn.status
-      when :falling
-        fall(spawn)
-        log("Timber!")
-      when :idling
-        log("How many years before the next on time train?")
-      else
-        log("What status #{status.inspect} are you talking about?")
-      end
     end
   end
 
   private
   
-  FALL_RATE = 1
-  def fall(spawn)
+  def apply_gravity(spawn)
     spawn_position = @positions[spawn.identifier]  
-    @positions[spawn.identifier].z -= FALL_RATE
+    level_height = @level_map[@size * spawn_position.y + spawn_position.x]
+    if spawn_position.z >= level_height
+      spawn.cinetic + GRAVITY
+    end
+    spawn
   end
 
+  def resolve_movement(spawn)
+    original_position = @positions[spawn.identifier]
+    free_position = original_position + spawn.cinetic
+    final_position = detect_collision(original_position, free_position)
+  end
 
-  def falling_env(spawn)
-    env = {}
-    spawn_pos = @positions[spawn.identifier]
-    level_height = @level_map[@size * spawn_pos.y + spawn_pos.x]
-    puts "level_height=#{level_height} vs pos.z=#{spawn_pos.z}"
-    if level_height < spawn_pos.z
-      env[:forced_status] = Living::STATUSES[1]
-    end
-    env
+  def detect_collision(original_position, free_position)
+    minimum, maximum = bounding_box(original_position, free_position)
+    puts "Bounding box: #{minimum.inspect} / #{maximum.inspect}"
+  end
+
+  def bounding_box(*positions)
+    min_x, max_x = positions.map(&:x).minmax
+    min_y, max_y = positions.map(&:y).minmax
+    min_z, max_z = positions.map(&:z).minmax
+    return [Position.new(min_x, min_y, min_z), Position.new(max_x, max_y, max_z)]
   end
 
   def random_free_position
