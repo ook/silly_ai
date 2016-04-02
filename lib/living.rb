@@ -5,6 +5,11 @@ class Living < Identifiable
     @status = STATUSES.first
     @status_duration = 0
     @last_statuses = FifoMemory.new
+    @cinetic_vector = Vector.new
+  end
+
+  def cinetic
+    @cinetic_vector
   end
 
   def status=(status)
