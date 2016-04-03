@@ -75,7 +75,7 @@ class World < Identifiable
     @spawns.values.each do |spawn|
       apply_gravity(spawn)
       resolve_movement(spawn)
-      spawn.run_tick(env)
+      spawn.run_tick({})
     end
   end
 
